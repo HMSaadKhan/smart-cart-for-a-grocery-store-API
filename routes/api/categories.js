@@ -2,13 +2,10 @@ var express = require("express");
 var router = express.Router();
 const mongoose = require("mongoose");
 var { Category } = require("../../models/categories");
+var { Product } = require("../../models/Product");
 
-// const createCategory = async (name) => {
-//   let category = new CategoryModel();
-//   category.name = name;
-//   await category.save();
-// };
-
+var middleware = require("../../middlewares/user");
+//add a category
 router.post("/", async (req, res) => {
   try {
     console.log(req.body);
@@ -23,10 +20,18 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+//get categories
+router.get("/", middleware.authenticator, async (req, res) => {
   try {
-    let category = await Category.find();
-    return res.send(category);
+    let categories = await Category.find().lean();
+    for (category of categories) {
+      category.products = await Product.countDocuments({
+        category: category._id
+      });
+    }
+  
+
+    return res.send(categories);
   } catch (err) {
     console.log(err);
     return res.send("Product not Added");
