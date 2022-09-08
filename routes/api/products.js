@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const mongoose = require("mongoose");
 var { Product } = require("../../models/Product");
+var { Category } = require("../../models/categories");
 
 // add a product
 router.post("/", async (req, res) => {
@@ -25,7 +26,9 @@ router.post("/", async (req, res) => {
 // view products by category
 router.get("/:category", async (req, res) => {
   try {
-    let products = await Product.find({ category: req.params.category });
+    let products = await Product.find({
+      category: req.params.category,
+    }).populate("category");
     if (products) {
       return res.send(products);
     } else {

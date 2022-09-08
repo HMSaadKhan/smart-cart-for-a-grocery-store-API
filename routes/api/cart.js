@@ -14,7 +14,7 @@ router.post("/:id", middleware.authenticator, async (req, res) => {
       if (item.Product === req.params.id) {
         item.quantity += 1;
         await Cart.findByIdAndUpdate(cart._id, { items: cart.items });
-        return res.send("dublicate added to cart");
+        return res.send("Incremented to cart");
       }
     }
     cart.items.push({ Product: req.params.id, quantity: 1 });
@@ -26,7 +26,7 @@ router.post("/:id", middleware.authenticator, async (req, res) => {
 });
 
 //inc to cart item
-router.post("/inc/:id", middleware.authenticator, async (req, res) => {
+router.put("/inc/:id", middleware.authenticator, async (req, res) => {
   try {
     let cart = await Cart.findOne({ User: req.user._id });
     for (const item of cart.items) {
@@ -42,7 +42,7 @@ router.post("/inc/:id", middleware.authenticator, async (req, res) => {
 });
 
 //dec to cart item
-router.post("/dec/:id", middleware.authenticator, async (req, res) => {
+router.put("/dec/:id", middleware.authenticator, async (req, res) => {
   try {
     let cart = await Cart.findOne({ User: req.user._id });
     for (const item of cart.items) {
